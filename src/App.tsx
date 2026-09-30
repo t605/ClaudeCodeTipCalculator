@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import {
   MAX_BILL,
-  MAX_PEOPLE,
   MAX_TIP,
-  MIN_PEOPLE,
   calculate,
   formatAmount,
   parsePeople,
@@ -12,6 +10,7 @@ import { DEFAULTS } from './constants'
 import { CurrencySelect } from './components/CurrencySelect'
 import { NumberField } from './components/NumberField'
 import { ResultField } from './components/ResultField'
+import { SplitSection } from './components/SplitSection'
 import { TipPresets } from './components/TipPresets'
 import './App.css'
 
@@ -80,60 +79,15 @@ function App() {
         <ResultField id="tip-amount" label="Tip amount" value={formatAmount(tipAmount)} unit={currency} />
         <ResultField id="total" label="Total" value={formatAmount(total)} unit={currency} total />
 
-        <div className="split">
-          <button
-            type="button"
-            className="split-toggle"
-            aria-expanded={splitOpen}
-            aria-controls="split-body"
-            onClick={() => setSplitOpen((o) => !o)}
-          >
-            <svg
-              className={'chevron' + (splitOpen ? '' : ' closed')}
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M6 15l6-6 6 6" />
-            </svg>
-            Are you splitting the bill?
-          </button>
-
-          {splitOpen && (
-            <div id="split-body" className="split-body">
-              <NumberField
-                id="people"
-                label="Number of people"
-                value={people}
-                onValueChange={setPeople}
-                onBlur={() => setPeople(String(parsePeople(people)))}
-                min={MIN_PEOPLE}
-                max={MAX_PEOPLE}
-                placeholder={String(MIN_PEOPLE)}
-              />
-
-              <ResultField
-                id="tip-per-person"
-                label="Tip per person"
-                value={formatAmount(tipPerPerson)}
-                unit={currency}
-              />
-              <ResultField
-                id="total-per-person"
-                label="Total per person"
-                value={formatAmount(totalPerPerson)}
-                unit={currency}
-                total
-              />
-            </div>
-          )}
-        </div>
+        <SplitSection
+          open={splitOpen}
+          onToggle={() => setSplitOpen((o) => !o)}
+          people={people}
+          onPeopleChange={setPeople}
+          tipPerPerson={formatAmount(tipPerPerson)}
+          totalPerPerson={formatAmount(totalPerPerson)}
+          currency={currency}
+        />
 
         <footer className="actions">
           <button type="button" className="action share" onClick={share}>
