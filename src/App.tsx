@@ -8,9 +8,11 @@ import {
   formatAmount,
   parsePeople,
 } from './calc'
-import { CURRENCIES, DEFAULTS, TIP_PRESETS } from './constants'
+import { DEFAULTS } from './constants'
+import { CurrencySelect } from './components/CurrencySelect'
 import { NumberField } from './components/NumberField'
 import { ResultField } from './components/ResultField'
+import { TipPresets } from './components/TipPresets'
 import './App.css'
 
 function App() {
@@ -62,18 +64,7 @@ function App() {
           onValueChange={setBill}
           max={MAX_BILL}
           decimals={2}
-          unit={
-            <select
-              aria-label="Currency"
-              className="unit-select"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          }
+          unit={<CurrencySelect value={currency} onChange={setCurrency} />}
         />
 
         <NumberField
@@ -83,21 +74,7 @@ function App() {
           onValueChange={setTip}
           max={MAX_TIP}
           unit={<span className="unit">%</span>}
-          below={
-            <div className="chips" role="group" aria-label="Tip presets">
-              {TIP_PRESETS.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  className={'chip' + (tip === p ? ' active' : '')}
-                  aria-pressed={tip === p}
-                  onClick={() => setTip(p)}
-                >
-                  {p}%
-                </button>
-              ))}
-            </div>
-          }
+          below={<TipPresets value={tip} onSelect={setTip} />}
         />
 
         <ResultField id="tip-amount" label="Tip amount" value={formatAmount(tipAmount)} unit={currency} />
