@@ -1,11 +1,5 @@
 import { useState } from 'react'
-import {
-  MAX_BILL,
-  MAX_TIP,
-  calculate,
-  formatAmount,
-  parsePeople,
-} from './calc'
+import { MAX_BILL, MAX_TIP, buildShareText, calculate, formatAmount } from './calc'
 import { DEFAULTS } from './constants'
 import { Actions } from './components/Actions'
 import { CurrencySelect } from './components/CurrencySelect'
@@ -22,7 +16,7 @@ function App() {
   const [people, setPeople] = useState(DEFAULTS.people)
   const [splitOpen, setSplitOpen] = useState(false)
 
-  const { tipAmount, total, tipPerPerson, totalPerPerson } = calculate(bill, tip, people)
+  const result = calculate(bill, tip, people)
 
   const reset = () => {
     setBill(DEFAULTS.bill)
@@ -32,10 +26,7 @@ function App() {
     setSplitOpen(false)
   }
 
-  const shareText =
-    `Bill ${bill || '0'} ${currency}, tip ${tip || '0'}%: tip ${formatAmount(tipAmount)}, ` +
-    `total ${formatAmount(total)} ${currency}. ` +
-    `Split between ${parsePeople(people)}: ${formatAmount(totalPerPerson)} ${currency} each.`
+  const shareText = buildShareText(bill, tip, currency, result, splitOpen ? people : null)
 
   return (
     <main className="page">
@@ -61,16 +52,16 @@ function App() {
           below={<TipPresets value={tip} onSelect={setTip} />}
         />
 
-        <ResultField id="tip-amount" label="Tip amount" value={formatAmount(tipAmount)} unit={currency} />
-        <ResultField id="total" label="Total" value={formatAmount(total)} unit={currency} total />
+        <ResultField id="tip-amount" label="Tip amount" value={formatAmount(result.tipAmount)} unit={currency} />
+        <ResultField id="total" label="Total" value={formatAmount(result.total)} unit={currency} total />
 
         <SplitSection
           open={splitOpen}
           onToggle={() => setSplitOpen((o) => !o)}
           people={people}
           onPeopleChange={setPeople}
-          tipPerPerson={formatAmount(tipPerPerson)}
-          totalPerPerson={formatAmount(totalPerPerson)}
+          tipPerPerson={formatAmount(result.tipPerPerson)}
+          totalPerPerson={formatAmount(result.totalPerPerson)}
           currency={currency}
         />
 

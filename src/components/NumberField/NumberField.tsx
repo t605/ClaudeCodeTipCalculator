@@ -5,6 +5,8 @@ import { Field } from '../Field'
 // Keys a number input would accept but this calculator must not:
 // sign and exponent (and the decimal point for whole-number fields).
 const blockKeys = (keys: string) => (e: KeyboardEvent<HTMLInputElement>) => {
+  // Leave browser shortcuts alone, e.g. Ctrl+minus / Ctrl+plus for zoom.
+  if (e.ctrlKey || e.metaKey || e.altKey) return
   if (keys.includes(e.key)) e.preventDefault()
 }
 const blockDecimal = blockKeys('-+eE')

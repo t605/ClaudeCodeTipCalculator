@@ -3,6 +3,7 @@ import {
   MAX_BILL,
   MAX_PEOPLE,
   MAX_TIP,
+  buildShareText,
   calculate,
   formatAmount,
   limitInput,
@@ -105,5 +106,25 @@ describe('formatAmount rounding', () => {
     expect(formatAmount(32.1)).toBe('32.10')
     expect(formatAmount(0)).toBe('0.00')
     expect(formatAmount(353.1)).toBe('353.10')
+  })
+})
+
+describe('buildShareText', () => {
+  const result = calculate('321', '10', '2')
+  it('leaves out the split when the user is not splitting', () => {
+    expect(buildShareText('321', '10', 'PLN', result, null)).toBe(
+      'Bill 321 PLN, tip 10%: tip 32.10, total 353.10 PLN.',
+    )
+  })
+  it('adds the per-person amount when splitting', () => {
+    expect(buildShareText('321', '10', 'PLN', result, '2')).toBe(
+      'Bill 321 PLN, tip 10%: tip 32.10, total 353.10 PLN. Split between 2: 176.55 PLN each.',
+    )
+  })
+  it('shows 0 for an empty bill and tip', () => {
+    const empty = calculate('', '', '2')
+    expect(buildShareText('', '', 'EUR', empty, null)).toBe(
+      'Bill 0 EUR, tip 0%: tip 0.00, total 0.00 EUR.',
+    )
   })
 })

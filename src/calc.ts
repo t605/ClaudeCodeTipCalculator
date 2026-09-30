@@ -46,6 +46,21 @@ export interface TipResult {
   totalPerPerson: number
 }
 
+/** One-line summary for the Share button. Pass `people` only when the user is splitting. */
+export function buildShareText(
+  bill: string,
+  tipPercent: string,
+  currency: string,
+  result: TipResult,
+  people: string | null,
+): string {
+  const text =
+    `Bill ${bill || '0'} ${currency}, tip ${tipPercent || '0'}%: tip ${formatAmount(result.tipAmount)}, ` +
+    `total ${formatAmount(result.total)} ${currency}.`
+  if (people === null) return text
+  return `${text} Split between ${parsePeople(people)}: ${formatAmount(result.totalPerPerson)} ${currency} each.`
+}
+
 export function calculate(bill: string, tipPercent: string, people: string): TipResult {
   const billValue = parseNumber(bill)
   const tipAmount = (billValue * parseNumber(tipPercent)) / 100
