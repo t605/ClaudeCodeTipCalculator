@@ -7,6 +7,7 @@ import {
   parsePeople,
 } from './calc'
 import { DEFAULTS } from './constants'
+import { Actions } from './components/Actions'
 import { CurrencySelect } from './components/CurrencySelect'
 import { NumberField } from './components/NumberField'
 import { ResultField } from './components/ResultField'
@@ -20,7 +21,6 @@ function App() {
   const [currency, setCurrency] = useState(DEFAULTS.currency)
   const [people, setPeople] = useState(DEFAULTS.people)
   const [splitOpen, setSplitOpen] = useState(false)
-  const [shareNote, setShareNote] = useState('')
 
   const { tipAmount, total, tipPerPerson, totalPerPerson } = calculate(bill, tip, people)
 
@@ -32,25 +32,10 @@ function App() {
     setSplitOpen(false)
   }
 
-  const share = async () => {
-    const text =
-      `Bill ${bill || '0'} ${currency}, tip ${tip || '0'}%: tip ${formatAmount(tipAmount)}, ` +
-      `total ${formatAmount(total)} ${currency}. ` +
-      `Split between ${parsePeople(people)}: ${formatAmount(totalPerPerson)} ${currency} each.`
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: 'Tip calculator', text })
-        return
-      }
-      await navigator.clipboard.writeText(text)
-      setShareNote('Copied to clipboard')
-    } catch (e) {
-      // Closing the share sheet rejects with AbortError; that is not a failure.
-      if (e instanceof DOMException && e.name === 'AbortError') return
-      setShareNote('Could not share')
-    }
-    setTimeout(() => setShareNote(''), 2500)
-  }
+  const shareText =
+    `Bill ${bill || '0'} ${currency}, tip ${tip || '0'}%: tip ${formatAmount(tipAmount)}, ` +
+    `total ${formatAmount(total)} ${currency}. ` +
+    `Split between ${parsePeople(people)}: ${formatAmount(totalPerPerson)} ${currency} each.`
 
   return (
     <main className="page">
@@ -89,30 +74,7 @@ function App() {
           currency={currency}
         />
 
-        <footer className="actions">
-          <button type="button" className="action share" onClick={share}>
-            <span className="share-icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <path d="M8.6 10.5l7-4M8.6 13.5l7 4" stroke="currentColor" strokeWidth="2" />
-              </svg>
-            </span>
-            Share result
-          </button>
-          <div className="actions-col">
-            <button type="button" className="action" onClick={() => window.location.reload()}>
-              Reload calculator
-            </button>
-            <button type="button" className="action" onClick={reset}>
-              Clear all changes
-            </button>
-          </div>
-          <p className="note" role="status">
-            {shareNote}
-          </p>
-        </footer>
+        <Actions shareText={shareText} onClear={reset} />
       </section>
     </main>
   )
