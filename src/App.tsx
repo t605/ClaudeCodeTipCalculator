@@ -9,12 +9,8 @@ import {
   limitInput,
   parsePeople,
 } from './calc'
+import { CURRENCIES, DEFAULTS, TIP_PRESETS } from './constants'
 import './App.css'
-
-const CURRENCIES = ['PLN', 'EUR', 'USD', 'GBP', 'HUF', 'ILS', 'CZK', 'CHF']
-const TIP_PRESETS = ['5', '10', '15', '20']
-
-const DEFAULTS = { bill: '', tip: '', currency: 'PLN', people: String(MIN_PEOPLE) }
 
 // Keys a number input would accept but this calculator must not:
 // sign and exponent (and the decimal point for whole-number fields).
