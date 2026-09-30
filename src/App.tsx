@@ -10,6 +10,8 @@ import {
   parsePeople,
 } from './calc'
 import { CURRENCIES, DEFAULTS, TIP_PRESETS } from './constants'
+import { Field } from './components/Field'
+import { ResultField } from './components/ResultField'
 import './App.css'
 
 // Keys a number input would accept but this calculator must not:
@@ -62,81 +64,67 @@ function App() {
     <main className="page">
       <h1 className="title">Tip Calculator</h1>
       <section className="card" aria-label="Tip calculator">
-        <div className="field">
-          <label htmlFor="bill">Bill</label>
-          <div className="input">
-            <input
-              id="bill"
-              type="number"
-              inputMode="decimal"
-              min={0}
-              max={MAX_BILL}
-              step="0.01"
-              placeholder="0"
-              value={bill}
-              onKeyDown={blockDecimal}
-              onChange={(e) => setBill(limitInput(bill, e.target.value, MAX_BILL, 2))}
-            />
-            <select
-              aria-label="Currency"
-              className="unit-select"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="field">
-          <label htmlFor="tip">Tip</label>
-          <div className="input">
-            <input
-              id="tip"
-              type="number"
-              inputMode="numeric"
-              min={0}
-              max={MAX_TIP}
-              step={1}
-              placeholder="0"
-              value={tip}
-              onKeyDown={blockNonInteger}
-              onChange={(e) => setTip(limitInput(tip, e.target.value, MAX_TIP, 0))}
-            />
-            <span className="unit">%</span>
-          </div>
-          <div className="chips" role="group" aria-label="Tip presets">
-            {TIP_PRESETS.map((p) => (
-              <button
-                key={p}
-                type="button"
-                className={'chip' + (tip === p ? ' active' : '')}
-                aria-pressed={tip === p}
-                onClick={() => setTip(p)}
-              >
-                {p}%
-              </button>
+        <Field id="bill" label="Bill">
+          <input
+            id="bill"
+            type="number"
+            inputMode="decimal"
+            min={0}
+            max={MAX_BILL}
+            step="0.01"
+            placeholder="0"
+            value={bill}
+            onKeyDown={blockDecimal}
+            onChange={(e) => setBill(limitInput(bill, e.target.value, MAX_BILL, 2))}
+          />
+          <select
+            aria-label="Currency"
+            className="unit-select"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c}>{c}</option>
             ))}
-          </div>
-        </div>
+          </select>
+        </Field>
 
-        <div className="field">
-          <label htmlFor="tip-amount">Tip amount</label>
-          <div className="input readonly">
-            <output id="tip-amount">{formatAmount(tipAmount)}</output>
-            <span className="unit">{currency}</span>
-          </div>
-        </div>
+        <Field
+          id="tip"
+          label="Tip"
+          below={
+            <div className="chips" role="group" aria-label="Tip presets">
+              {TIP_PRESETS.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={'chip' + (tip === p ? ' active' : '')}
+                  aria-pressed={tip === p}
+                  onClick={() => setTip(p)}
+                >
+                  {p}%
+                </button>
+              ))}
+            </div>
+          }
+        >
+          <input
+            id="tip"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            max={MAX_TIP}
+            step={1}
+            placeholder="0"
+            value={tip}
+            onKeyDown={blockNonInteger}
+            onChange={(e) => setTip(limitInput(tip, e.target.value, MAX_TIP, 0))}
+          />
+          <span className="unit">%</span>
+        </Field>
 
-        <div className="field">
-          <label htmlFor="total">Total</label>
-          <div className="input readonly total">
-            <output id="total">{formatAmount(total)}</output>
-            <span className="unit">{currency}</span>
-          </div>
-        </div>
+        <ResultField id="tip-amount" label="Tip amount" value={formatAmount(tipAmount)} unit={currency} />
+        <ResultField id="total" label="Total" value={formatAmount(total)} unit={currency} total />
 
         <div className="split">
           <button
@@ -165,40 +153,35 @@ function App() {
 
           {splitOpen && (
             <div id="split-body" className="split-body">
-              <div className="field">
-                <label htmlFor="people">Number of people</label>
-                <div className="input">
-                  <input
-                    id="people"
-                    type="number"
-                    inputMode="numeric"
-                    min={MIN_PEOPLE}
-                    max={MAX_PEOPLE}
-                    step={1}
-                    placeholder={String(MIN_PEOPLE)}
-                    value={people}
-                    onKeyDown={blockNonInteger}
-                    onChange={(e) => setPeople(limitInput(people, e.target.value, MAX_PEOPLE, 0))}
-                    onBlur={() => setPeople(String(parsePeople(people)))}
-                  />
-                </div>
-              </div>
+              <Field id="people" label="Number of people">
+                <input
+                  id="people"
+                  type="number"
+                  inputMode="numeric"
+                  min={MIN_PEOPLE}
+                  max={MAX_PEOPLE}
+                  step={1}
+                  placeholder={String(MIN_PEOPLE)}
+                  value={people}
+                  onKeyDown={blockNonInteger}
+                  onChange={(e) => setPeople(limitInput(people, e.target.value, MAX_PEOPLE, 0))}
+                  onBlur={() => setPeople(String(parsePeople(people)))}
+                />
+              </Field>
 
-              <div className="field">
-                <label htmlFor="tip-per-person">Tip per person</label>
-                <div className="input readonly">
-                  <output id="tip-per-person">{formatAmount(tipPerPerson)}</output>
-                  <span className="unit">{currency}</span>
-                </div>
-              </div>
-
-              <div className="field">
-                <label htmlFor="total-per-person">Total per person</label>
-                <div className="input readonly total">
-                  <output id="total-per-person">{formatAmount(totalPerPerson)}</output>
-                  <span className="unit">{currency}</span>
-                </div>
-              </div>
+              <ResultField
+                id="tip-per-person"
+                label="Tip per person"
+                value={formatAmount(tipPerPerson)}
+                unit={currency}
+              />
+              <ResultField
+                id="total-per-person"
+                label="Total per person"
+                value={formatAmount(totalPerPerson)}
+                unit={currency}
+                total
+              />
             </div>
           )}
         </div>
