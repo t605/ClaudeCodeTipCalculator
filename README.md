@@ -18,10 +18,10 @@ npm run dev
 - `npm run build` - type-check and build to `dist/`
 
 ## Features
-- Bill and Tip are editable (comma or dot decimals); Tip amount and Total are calculated.
+- Bill (0-100000, max 2 decimals), Tip (whole number 0-100) and Number of people (whole number 2-50) are native number fields; invalid input is ignored. Tip amount and Total are calculated.
 - Currency selector (PLN, EUR, USD, GBP, HUF, ILS, CZK, CHF), tip presets (5/10/15/20%).
-- Collapsible "Are you splitting the bill?" section: number of people (1-99) gives tip per person and total per person.
-- Footer buttons: Share result (system share sheet, or copies a summary), Reload calculator (reloads the page), Clear all changes (back to defaults: 321,00 PLN, 10%, 2 people).
+- Collapsible "Are you splitting the bill?" section (hidden by default): tip per person and total per person.
+- Footer buttons: Share result (system share sheet, or copies a summary), Reload calculator, Clear all changes (back to the empty reset state, 2 people, split section hidden).
 - Dark mode; works from 320px wide.
 
 ## Install as an app (PWA)

@@ -1,18 +1,35 @@
 import { useState } from 'react'
-import { calculate, formatAmount, MAX_PEOPLE, parsePeople, sanitizeDecimal } from './calc'
+import {
+  MAX_BILL,
+  MAX_PEOPLE,
+  MAX_TIP,
+  MIN_PEOPLE,
+  calculate,
+  formatAmount,
+  limitInput,
+  parsePeople,
+} from './calc'
 import './App.css'
 
 const CURRENCIES = ['PLN', 'EUR', 'USD', 'GBP', 'HUF', 'ILS', 'CZK', 'CHF']
 const TIP_PRESETS = ['5', '10', '15', '20']
 
-const DEFAULTS = { bill: '321,00', tip: '10', currency: 'PLN', people: '2' }
+const DEFAULTS = { bill: '', tip: '', currency: 'PLN', people: String(MIN_PEOPLE) }
+
+// Keys a number input would accept but this calculator must not:
+// sign and exponent (and the decimal point for whole-number fields).
+const blockKeys = (keys: string) => (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (keys.includes(e.key)) e.preventDefault()
+}
+const blockDecimal = blockKeys('-+eE')
+const blockNonInteger = blockKeys('-+eE.,')
 
 function App() {
   const [bill, setBill] = useState(DEFAULTS.bill)
   const [tip, setTip] = useState(DEFAULTS.tip)
   const [currency, setCurrency] = useState(DEFAULTS.currency)
   const [people, setPeople] = useState(DEFAULTS.people)
-  const [splitOpen, setSplitOpen] = useState(true)
+  const [splitOpen, setSplitOpen] = useState(false)
   const [shareNote, setShareNote] = useState('')
 
   const { tipAmount, total, tipPerPerson, totalPerPerson } = calculate(bill, tip, people)
@@ -22,7 +39,7 @@ function App() {
     setTip(DEFAULTS.tip)
     setCurrency(DEFAULTS.currency)
     setPeople(DEFAULTS.people)
-    setSplitOpen(true)
+    setSplitOpen(false)
   }
 
   const share = async () => {
@@ -37,7 +54,9 @@ function App() {
       }
       await navigator.clipboard.writeText(text)
       setShareNote('Copied to clipboard')
-    } catch {
+    } catch (e) {
+      // Closing the share sheet rejects with AbortError; that is not a failure.
+      if (e instanceof DOMException && e.name === 'AbortError') return
       setShareNote('Could not share')
     }
     setTimeout(() => setShareNote(''), 2500)
@@ -45,20 +64,22 @@ function App() {
 
   return (
     <main className="page">
+      <h1 className="title">Tip Calculator</h1>
       <section className="card" aria-label="Tip calculator">
-        <header className="header">
-          <h1 className="title">Tip Calculator</h1>
-        </header>
-
         <div className="field">
           <label htmlFor="bill">Bill</label>
           <div className="input">
             <input
               id="bill"
+              type="number"
               inputMode="decimal"
-              placeholder="0,00"
+              min={0}
+              max={MAX_BILL}
+              step="0.01"
+              placeholder="0"
               value={bill}
-              onChange={(e) => setBill(sanitizeDecimal(e.target.value))}
+              onKeyDown={blockDecimal}
+              onChange={(e) => setBill(limitInput(bill, e.target.value, MAX_BILL, 2))}
             />
             <select
               aria-label="Currency"
@@ -78,10 +99,15 @@ function App() {
           <div className="input">
             <input
               id="tip"
-              inputMode="decimal"
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={MAX_TIP}
+              step={1}
               placeholder="0"
               value={tip}
-              onChange={(e) => setTip(sanitizeDecimal(e.target.value))}
+              onKeyDown={blockNonInteger}
+              onChange={(e) => setTip(limitInput(tip, e.target.value, MAX_TIP, 0))}
             />
             <span className="unit">%</span>
           </div>
@@ -101,17 +127,17 @@ function App() {
         </div>
 
         <div className="field">
-          <label>Tip amount</label>
-          <div className="input readonly" aria-live="polite">
-            <output>{formatAmount(tipAmount)}</output>
+          <label htmlFor="tip-amount">Tip amount</label>
+          <div className="input readonly">
+            <output id="tip-amount">{formatAmount(tipAmount)}</output>
             <span className="unit">{currency}</span>
           </div>
         </div>
 
         <div className="field">
-          <label>Total</label>
-          <div className="input readonly total" aria-live="polite">
-            <output>{formatAmount(total)}</output>
+          <label htmlFor="total">Total</label>
+          <div className="input readonly total">
+            <output id="total">{formatAmount(total)}</output>
             <span className="unit">{currency}</span>
           </div>
         </div>
@@ -148,27 +174,32 @@ function App() {
                 <div className="input">
                   <input
                     id="people"
+                    type="number"
                     inputMode="numeric"
-                    maxLength={String(MAX_PEOPLE).length}
-                    placeholder="1"
+                    min={MIN_PEOPLE}
+                    max={MAX_PEOPLE}
+                    step={1}
+                    placeholder={String(MIN_PEOPLE)}
                     value={people}
-                    onChange={(e) => setPeople(e.target.value.replace(/\D/g, ''))}
+                    onKeyDown={blockNonInteger}
+                    onChange={(e) => setPeople(limitInput(people, e.target.value, MAX_PEOPLE, 0))}
+                    onBlur={() => setPeople(String(parsePeople(people)))}
                   />
                 </div>
               </div>
 
               <div className="field">
-                <label>Tip per person</label>
-                <div className="input readonly" aria-live="polite">
-                  <output>{formatAmount(tipPerPerson)}</output>
+                <label htmlFor="tip-per-person">Tip per person</label>
+                <div className="input readonly">
+                  <output id="tip-per-person">{formatAmount(tipPerPerson)}</output>
                   <span className="unit">{currency}</span>
                 </div>
               </div>
 
               <div className="field">
-                <label>Total per person</label>
-                <div className="input readonly total" aria-live="polite">
-                  <output>{formatAmount(totalPerPerson)}</output>
+                <label htmlFor="total-per-person">Total per person</label>
+                <div className="input readonly total">
+                  <output id="total-per-person">{formatAmount(totalPerPerson)}</output>
                   <span className="unit">{currency}</span>
                 </div>
               </div>

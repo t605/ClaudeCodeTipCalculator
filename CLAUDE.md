@@ -5,7 +5,8 @@ A small web app (Vite + React + TypeScript) that calculates tip amount, total an
 
 ## Decisions (do not "correct")
 - Calculation logic lives in `src/calc.ts` (pure, unit-tested); the UI only calls it.
-- Numbers are shown with two decimals and a comma (`32,10`). Input accepts comma or dot and strips other characters.
+- Numbers use a dot everywhere (`32.10`), inputs and results alike (course lesson "See How to Fix Bugs"). Inputs are native `type=number` fields with `min`/`max`/`step`; `limitInput` in `src/calc.ts` rejects changes that break the rules (bill <= 100000 with 2 decimals, tip 0-100 whole, people 2-50 whole).
+- Reset state: bill and tip empty (shown as 0), 2 people, split section hidden. Title sits above the card.
 - Tip amount and Total are read-only outputs, never editable.
 - No UI library and no state library: plain React state and plain CSS with variables (light/dark via `prefers-color-scheme`).
 - This is a Node project, so the Python `.bat` launcher / release-zip pattern from the shared CLAUDE.md does not apply.
