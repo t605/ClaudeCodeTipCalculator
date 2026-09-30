@@ -6,21 +6,12 @@ import {
   MIN_PEOPLE,
   calculate,
   formatAmount,
-  limitInput,
   parsePeople,
 } from './calc'
 import { CURRENCIES, DEFAULTS, TIP_PRESETS } from './constants'
-import { Field } from './components/Field'
+import { NumberField } from './components/NumberField'
 import { ResultField } from './components/ResultField'
 import './App.css'
-
-// Keys a number input would accept but this calculator must not:
-// sign and exponent (and the decimal point for whole-number fields).
-const blockKeys = (keys: string) => (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if (keys.includes(e.key)) e.preventDefault()
-}
-const blockDecimal = blockKeys('-+eE')
-const blockNonInteger = blockKeys('-+eE.,')
 
 function App() {
   const [bill, setBill] = useState(DEFAULTS.bill)
@@ -64,34 +55,34 @@ function App() {
     <main className="page">
       <h1 className="title">Tip Calculator</h1>
       <section className="card" aria-label="Tip calculator">
-        <Field id="bill" label="Bill">
-          <input
-            id="bill"
-            type="number"
-            inputMode="decimal"
-            min={0}
-            max={MAX_BILL}
-            step="0.01"
-            placeholder="0"
-            value={bill}
-            onKeyDown={blockDecimal}
-            onChange={(e) => setBill(limitInput(bill, e.target.value, MAX_BILL, 2))}
-          />
-          <select
-            aria-label="Currency"
-            className="unit-select"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-          >
-            {CURRENCIES.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-        </Field>
+        <NumberField
+          id="bill"
+          label="Bill"
+          value={bill}
+          onValueChange={setBill}
+          max={MAX_BILL}
+          decimals={2}
+          unit={
+            <select
+              aria-label="Currency"
+              className="unit-select"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          }
+        />
 
-        <Field
+        <NumberField
           id="tip"
           label="Tip"
+          value={tip}
+          onValueChange={setTip}
+          max={MAX_TIP}
+          unit={<span className="unit">%</span>}
           below={
             <div className="chips" role="group" aria-label="Tip presets">
               {TIP_PRESETS.map((p) => (
@@ -107,21 +98,7 @@ function App() {
               ))}
             </div>
           }
-        >
-          <input
-            id="tip"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            max={MAX_TIP}
-            step={1}
-            placeholder="0"
-            value={tip}
-            onKeyDown={blockNonInteger}
-            onChange={(e) => setTip(limitInput(tip, e.target.value, MAX_TIP, 0))}
-          />
-          <span className="unit">%</span>
-        </Field>
+        />
 
         <ResultField id="tip-amount" label="Tip amount" value={formatAmount(tipAmount)} unit={currency} />
         <ResultField id="total" label="Total" value={formatAmount(total)} unit={currency} total />
@@ -153,21 +130,16 @@ function App() {
 
           {splitOpen && (
             <div id="split-body" className="split-body">
-              <Field id="people" label="Number of people">
-                <input
-                  id="people"
-                  type="number"
-                  inputMode="numeric"
-                  min={MIN_PEOPLE}
-                  max={MAX_PEOPLE}
-                  step={1}
-                  placeholder={String(MIN_PEOPLE)}
-                  value={people}
-                  onKeyDown={blockNonInteger}
-                  onChange={(e) => setPeople(limitInput(people, e.target.value, MAX_PEOPLE, 0))}
-                  onBlur={() => setPeople(String(parsePeople(people)))}
-                />
-              </Field>
+              <NumberField
+                id="people"
+                label="Number of people"
+                value={people}
+                onValueChange={setPeople}
+                onBlur={() => setPeople(String(parsePeople(people)))}
+                min={MIN_PEOPLE}
+                max={MAX_PEOPLE}
+                placeholder={String(MIN_PEOPLE)}
+              />
 
               <ResultField
                 id="tip-per-person"
