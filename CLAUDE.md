@@ -12,9 +12,14 @@ A small web app (Vite + React + TypeScript) that calculates tip amount, total an
 - This is a Node project, so the Python `.bat` launcher / release-zip pattern from the shared CLAUDE.md does not apply.
 
 ## Files
-- `src/calc.ts`, `src/calc.test.ts` - logic and tests
-- `src/App.tsx`, `src/App.css`, `src/index.css` - UI
+- `src/calc.ts`, `src/calc.test.ts` - logic, input rules and tests (no React)
+- `src/constants.ts` - currencies, tip presets, reset defaults
+- `src/App.tsx`, `src/App.css` - state and page layout only
+- `src/components/<Name>/` - one folder per component, each with `<Name>.tsx`, `<Name>.css` (if styled) and `index.ts`:
+  Field (label + box), NumberField (input rules, key blocking), ResultField, CurrencySelect,
+  TipPresets, SplitSection, Actions (share / reload / clear)
 - `index.html`, `vite.config.ts`, `tsconfig.json`, `package.json`
+- Refactor rule: class names and DOM output stay the same unless a change is intended; compare the rendered HTML and computed styles before and after.
 
 ## Running
 Needs Node.js (nodejs.org). `npm install`, then `npm run dev` (http://localhost:5173).
