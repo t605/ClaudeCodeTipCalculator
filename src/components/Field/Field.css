@@ -1,0 +1,72 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 14px;
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.input input,
+.input output {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.readonly output {
+  color: var(--accent);
+}
+
+.total {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+.total output {
+  font-weight: 700;
+}
+
+.unit {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Hide the native number spinners' layout jump but keep them usable. */
+.input input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input input[type='number']:hover,
+.input input[type='number']:focus {
+  appearance: auto;
+  -moz-appearance: auto;
+}

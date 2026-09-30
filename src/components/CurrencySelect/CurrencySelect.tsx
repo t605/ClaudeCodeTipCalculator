@@ -1,4 +1,5 @@
 import { CURRENCIES } from '../../constants'
+import './CurrencySelect.css'
 
 interface CurrencySelectProps {
   value: string

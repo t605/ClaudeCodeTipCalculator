@@ -1,4 +1,5 @@
 import { TIP_PRESETS } from '../../constants'
+import './TipPresets.css'
 
 interface TipPresetsProps {
   /** The current tip percent, so the matching preset is highlighted. */

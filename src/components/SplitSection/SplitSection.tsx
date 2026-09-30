@@ -1,6 +1,7 @@
 import { MAX_PEOPLE, MIN_PEOPLE, parsePeople } from '../../calc'
 import { NumberField } from '../NumberField'
 import { ResultField } from '../ResultField'
+import './SplitSection.css'
 
 interface SplitSectionProps {
   open: boolean

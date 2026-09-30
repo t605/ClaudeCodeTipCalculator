@@ -1,0 +1,22 @@
+.unit-select {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  outline: 0;
+}
+
+.unit-select option {
+  color: var(--text);
+  background: var(--card);
+}
+
+.unit-select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

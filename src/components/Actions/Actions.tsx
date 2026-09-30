@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import './Actions.css'
 
 interface ActionsProps {
   /** The text to share or copy. */
