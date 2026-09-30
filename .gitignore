@@ -1,0 +1,7 @@
+node_modules
+dist
+*.local
+
+tsconfig.tsbuildinfo
+# stale duplicate copied by the app when the session moved; safe to delete
+/claude-code-tip-calculator/
