@@ -30,3 +30,26 @@ A terminal opened before Node was installed will not find `npm`; open a new one.
 
 ## Git
 Repository initialised locally (branch `main`). Publish with GitHub Desktop; `git` is also at /mingw64/bin.
+
+## Prompt for a similar project
+Reusable template (fill the <...>); from the wrap-up of this project on 2026-09-30.
+
+```text
+Create <app name> with <stack/template> in <exact folder>.
+Purpose/audience: <private | public lesson | for users>. Data rules: <none | no logo | no keys>.
+Screens to match: <attached screenshots, one per section>.
+Behaviour: <what is editable, what is calculated, example input -> exact output>.
+Extras: <list all features now, including reset/share/dark mode/PWA>.
+Publish: <where, how, who does which step>.
+Work rules: check tools installed first (Node etc.; I open a NEW terminal after
+installing); logic in a tested module; verify in a browser; list what was NOT tested.
+```
+
+What cost the most rounds last time, and the sentence that prevents it:
+- Node not installed / old terminal -> "Check Node first and tell me."
+- Wrong folder, stray duplicate -> give the exact target folder.
+- Features arriving one by one -> list all features and all screenshots up front.
+- Stray pasted text -> re-read pasted text from lessons before sending.
+- GitHub Pages: set Source = GitHub Actions BEFORE the first push; Pages is in the
+  repository Settings, not the account settings.
+- Public repo -> neutral generated icon, not a personal logo.
