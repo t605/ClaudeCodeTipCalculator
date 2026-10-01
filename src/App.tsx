@@ -52,8 +52,19 @@ function App() {
           below={<TipPresets value={tip} onSelect={setTip} />}
         />
 
-        <ResultField id="tip-amount" label="Tip amount" value={formatAmount(result.tipAmount)} unit={currency} />
-        <ResultField id="total" label="Total" value={formatAmount(result.total)} unit={currency} total />
+        <ResultField
+          id="tip-amount"
+          label="Tip amount"
+          value={formatAmount(result.tipAmount)}
+          unit={currency}
+        />
+        <ResultField
+          id="total"
+          label="Total"
+          value={formatAmount(result.total)}
+          unit={currency}
+          total
+        />
 
         <SplitSection
           open={splitOpen}

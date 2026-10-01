@@ -62,7 +62,12 @@ export function SplitSection({
             max={MAX_PEOPLE}
             placeholder={String(MIN_PEOPLE)}
           />
-          <ResultField id="tip-per-person" label="Tip per person" value={tipPerPerson} unit={currency} />
+          <ResultField
+            id="tip-per-person"
+            label="Tip per person"
+            value={tipPerPerson}
+            unit={currency}
+          />
           <ResultField
             id="total-per-person"
             label="Total per person"

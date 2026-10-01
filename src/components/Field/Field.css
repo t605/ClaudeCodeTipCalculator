@@ -19,7 +19,9 @@
   background: var(--field);
   border: 1px solid var(--border);
   border-radius: 10px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .input:focus-within {

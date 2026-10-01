@@ -8,7 +8,12 @@
   --accent: #4f6bed;
   --accent-soft: #eef1fe;
   --accent-border: #d5dcfb;
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   color: var(--text);
   background: var(--bg);
   color-scheme: light dark;

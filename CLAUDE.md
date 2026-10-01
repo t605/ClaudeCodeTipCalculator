@@ -34,6 +34,15 @@ A terminal opened before Node was installed will not find `npm`; open a new one.
 - `.github/workflows/deploy.yml` tests, builds and deploys to GitHub Pages on push to `main`.
 - Service-worker registration could not be verified in the built-in preview browser (it refuses to register one); test install and offline on a real phone after publishing.
 
+## Hooks (`.claude/settings.json`, scripts in `.claude/hooks/`)
+- `block-dangerous.mjs` (PreToolUse, Bash): denies force-push, `git push ... main` (it deploys the live site), `git reset --hard`, `git clean -f`, recursive deletes. Michael runs those himself if truly needed.
+- `protect-main.mjs` (PreToolUse, Edit|Write): denies edits while the checked-out branch is `main`. Work on `Learning-Branch`.
+- `after-edit.mjs` (PostToolUse, Edit|Write): after an edit under `src/`, formats the file with Prettier, then runs `vitest`; a failure is sent back to Claude. Formatting and tests are one script because hooks on the same event run in parallel.
+- `notify.mjs` (Notification and Stop): plays a Windows sound and shows a toast when Claude needs input or finishes. Remove the `Stop` entry if it is too frequent.
+- Prettier config: `.prettierrc.json` (no semicolons, single quotes, width 100, `endOfLine: auto` because Windows checkouts use CRLF). `npm install` provides it; hooks skip it if missing.
+- The scripts are plain Node (no jq). To disable one, remove its entry from `.claude/settings.json`.
+- Hooks load at session start: a new session is needed after changing `settings.json`.
+
 ## Git
 Repository initialised locally (branch `main`). Publish with GitHub Desktop; `git` is also at /mingw64/bin.
 
