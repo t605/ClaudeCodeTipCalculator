@@ -113,18 +113,49 @@ describe('buildShareText', () => {
   const result = calculate('321', '10', '2')
   it('leaves out the split when the user is not splitting', () => {
     expect(buildShareText('321', '10', 'PLN', result, null)).toBe(
-      'Bill 321 PLN, tip 10%: tip 32.10, total 353.10 PLN.',
+      'Bill 321.00 PLN, tip 10%: tip 32.10, total 353.10 PLN.',
     )
   })
   it('adds the per-person amount when splitting', () => {
     expect(buildShareText('321', '10', 'PLN', result, '2')).toBe(
-      'Bill 321 PLN, tip 10%: tip 32.10, total 353.10 PLN. Split between 2: 176.55 PLN each.',
+      'Bill 321.00 PLN, tip 10%: tip 32.10, total 353.10 PLN. Split between 2: 176.55 PLN each.',
     )
   })
-  it('shows 0 for an empty bill and tip', () => {
+  it('shows 0.00 for an empty bill and 0% for an empty tip', () => {
     const empty = calculate('', '', '2')
     expect(buildShareText('', '', 'EUR', empty, null)).toBe(
-      'Bill 0 EUR, tip 0%: tip 0.00, total 0.00 EUR.',
+      'Bill 0.00 EUR, tip 0%: tip 0.00, total 0.00 EUR.',
     )
+  })
+  it('prints a half-typed bill with two decimals, not as typed', () => {
+    const half = calculate('12.', '10', '2')
+    expect(buildShareText('12.', '10', 'PLN', half, null)).toContain('Bill 12.00 PLN')
+    const one = calculate('100.5', '10', '2')
+    expect(buildShareText('100.5', '10', 'PLN', one, null)).toContain('Bill 100.50 PLN')
+  })
+})
+
+describe('people minimum (typing vs calculating)', () => {
+  it('limitInput lets 0 and 1 through while typing, so the field can be cleared and retyped', () => {
+    expect(limitInput('', '1', MAX_PEOPLE, 0)).toBe('1')
+    expect(limitInput('1', '0', MAX_PEOPLE, 0)).toBe('0')
+  })
+  it('calculate and the share text still treat 0, 1 and empty as 2 people', () => {
+    for (const typed of ['0', '1', '']) {
+      const r = calculate('100', '0', typed)
+      expect(r.totalPerPerson).toBe(50)
+      expect(buildShareText('100', '0', 'PLN', r, typed)).toContain('Split between 2:')
+    }
+  })
+})
+
+describe('half-typed numbers', () => {
+  it('parseNumber reads "12." as 12 and ".5" as 0.5', () => {
+    expect(parseNumber('12.')).toBe(12)
+    expect(parseNumber('.5')).toBe(0.5)
+  })
+  it('limitInput accepts "12." and ".5" so they can be typed', () => {
+    expect(limitInput('12', '12.', MAX_BILL, 2)).toBe('12.')
+    expect(limitInput('', '.5', MAX_BILL, 2)).toBe('.5')
   })
 })

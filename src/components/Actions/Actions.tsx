@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './Actions.css'
 
 interface ActionsProps {
@@ -10,6 +10,10 @@ interface ActionsProps {
 /** Footer buttons: share the result, reload the page, clear all inputs. */
 export function Actions({ shareText, onClear }: ActionsProps) {
   const [note, setNote] = useState('')
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+
+  // Stop a pending "clear the note" timer when the component goes away.
+  useEffect(() => () => clearTimeout(timer.current), [])
 
   const share = async () => {
     try {
@@ -24,7 +28,9 @@ export function Actions({ shareText, onClear }: ActionsProps) {
       if (e instanceof DOMException && e.name === 'AbortError') return
       setNote('Could not share')
     }
-    setTimeout(() => setNote(''), 2500)
+    // Restart the timer so a second press does not get its note cleared by the first timer.
+    clearTimeout(timer.current)
+    timer.current = setTimeout(() => setNote(''), 2500)
   }
 
   return (

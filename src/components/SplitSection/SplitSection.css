@@ -36,6 +36,12 @@
   transform: rotate(180deg);
 }
 
+.hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
 .split-body {
   display: flex;
   flex-direction: column;

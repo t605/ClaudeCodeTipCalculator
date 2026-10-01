@@ -30,7 +30,7 @@ export function SplitSection({
         type="button"
         className="split-toggle"
         aria-expanded={open}
-        aria-controls="split-body"
+        aria-controls={open ? 'split-body' : undefined}
         onClick={onToggle}
       >
         <svg
@@ -61,6 +61,11 @@ export function SplitSection({
             min={MIN_PEOPLE}
             max={MAX_PEOPLE}
             placeholder={String(MIN_PEOPLE)}
+            below={
+              <p className="hint">
+                Between {MIN_PEOPLE} and {MAX_PEOPLE} people
+              </p>
+            }
           />
           <ResultField
             id="tip-per-person"

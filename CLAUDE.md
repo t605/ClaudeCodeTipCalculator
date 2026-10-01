@@ -34,6 +34,16 @@ A terminal opened before Node was installed will not find `npm`; open a new one.
 - `.github/workflows/deploy.yml` tests, builds and deploys to GitHub Pages on push to `main`.
 - Service-worker registration could not be verified in the built-in preview browser (it refuses to register one); test install and offline on a real phone after publishing.
 
+## QA checklist (the personal `qa-reviewer` agent reads this section)
+- Inputs: bill 0-100000 with at most 2 decimals; tip whole number 0-100; people whole number 2-50. Invalid input is ignored, never accepted. No leading zeros.
+- Results use a dot and exactly two decimals (`32.10`); half a cent rounds up. Tip amount and Total are read-only.
+- Reset state: bill and tip empty, 2 people, split section hidden, PLN.
+- Share text mentions the split only when the split section is open.
+- Accessibility and layout: every field has a linked label; buttons, dropdowns and presets are at least 44px tall; light and dark mode stay readable; no horizontal scroll down to 320px.
+- Calculation and input rules live in `src/calc.ts` and are unit-tested; the PWA files and the GitHub Actions deploy must keep working.
+- Already reviewed and deliberately left: per-person amounts are rounded separately and may differ from the total by a few cents; the "Reload calculator" button overlaps with "Clear all changes" (it follows the owner's screenshot).
+- Review with the project's own commands: `npm test`, `npx tsc -b`.
+
 ## Hooks (`.claude/settings.json`, scripts in `.claude/hooks/`)
 - `block-dangerous.mjs` (PreToolUse, Bash): denies force-push, `git push ... main` (it deploys the live site), `git reset --hard`, `git clean -f`, recursive deletes. Michael runs those himself if truly needed.
 - `protect-main.mjs` (PreToolUse, Edit|Write): denies edits while the checked-out branch is `main`. Work on `Learning-Branch`.

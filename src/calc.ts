@@ -54,9 +54,10 @@ export function buildShareText(
   result: TipResult,
   people: string | null,
 ): string {
+  // Show the bill with two decimals, like every other amount ("12." would otherwise print as typed).
   const text =
-    `Bill ${bill || '0'} ${currency}, tip ${tipPercent || '0'}%: tip ${formatAmount(result.tipAmount)}, ` +
-    `total ${formatAmount(result.total)} ${currency}.`
+    `Bill ${formatAmount(parseNumber(bill))} ${currency}, tip ${parseNumber(tipPercent)}%: ` +
+    `tip ${formatAmount(result.tipAmount)}, total ${formatAmount(result.total)} ${currency}.`
   if (people === null) return text
   return `${text} Split between ${parsePeople(people)}: ${formatAmount(result.totalPerPerson)} ${currency} each.`
 }
